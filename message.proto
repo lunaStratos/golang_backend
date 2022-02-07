@@ -1,0 +1,118 @@
+syntax = "proto3";
+
+option go_package = "target/go/message";
+option csharp_namespace = "com.test.protocol";
+
+package message;
+
+service MessageProcedure {
+
+  // [메시지 리스트]
+  rpc GetMessageList(GetMessageListRequest) returns (GetMessageListReply) {}
+  // [메시지 삭제]
+  rpc DoMessageDelete (DoMessageRequest) returns (DoMessageReply) {}
+  // [메시지 읽음]
+  rpc DoMessageRead (DoMessageRequest) returns (DoMessageReply) {}
+  // [메시지 모두 읽음]
+  rpc DoMessageReadMarked (DoMessageListRequest) returns (DoMessageReply) {}
+  // [메시지 모두 삭제]
+  rpc DoMessageDeleteMarked (DoMessageListRequest) returns (DoMessageReply) {}
+  // [SALE 메시지 생성]
+  rpc CreateSaleMessage (CreateSaleMessageRequest) returns (CreateMessageReply) {}
+  // [공지 메시지 생성]
+  rpc CreateNoticeMessage (CreateNoticeMessageRequest) returns (CreateMessageReply) {}
+
+}
+
+message Empty {}
+
+
+message GetMessageListRequest {
+  uint32 pageNum = 1;
+  string search = 2;
+  uint32 maxLenInPage = 3;
+  string categoryType = 4;
+  string mode = 5;
+
+}
+
+message GetMessageListReply {
+  uint32 code = 1;
+  string message = 2;
+  uint32 newCount = 3;
+  uint32 allCount = 4;
+  repeated Msg msg = 5;
+  uint32 startPage = 6;
+  uint32 endPage = 7;
+  uint32 lastPage = 8;
+  uint32 nowPage = 9;
+}
+
+// 메시지 정보 Repeat
+message Msg {
+  uint32 id = 1;
+  string message = 2;
+  string messageType = 3;
+  string messageSubType = 4;
+  string messageContents = 5;
+  string readYn = 6;
+  string dateTime = 7; // ui상의 날짜 표시
+}
+
+message CreateSaleMessageRequest {
+  uint32 userId = 1;
+  string messageSubType = 2;
+  string region = 3;
+  string country = 4;
+  string buyerName = 5;
+  MessageSale messageContent = 6;
+}
+
+message MessageSale{
+  string title = 1;
+  string country = 2;
+  string stateProvince = 3;
+  uint32 tileCount = 4;
+  uint32 level = 5;
+  string from = 6;
+  double price = 7;
+}
+
+
+message CreateNoticeMessageRequest {
+  uint32 userId = 1;
+  string messageSubType = 2;
+  MessageNotice messageContent = 3;
+}
+
+message MessageNotice{
+  string dateOfApplication = 1;
+  uint32 applicationAmount = 2;
+  string reviewTheResult = 3;
+  double withdrawFee = 4;
+  string title = 5;
+  string description = 6;
+}
+
+message CreateMessageReply {
+  uint32 code = 1;
+  string message = 2;
+}
+
+// msgId 공통
+message DoMessageRequest {
+  uint32 msgId = 1;
+}
+
+message DoMessageReply {
+  uint32 code = 1;
+  string message = 2;
+}
+
+// msgId 공통
+message DoMessageListRequest {
+  repeated uint32 msgIds = 1;
+}
+
+
+
